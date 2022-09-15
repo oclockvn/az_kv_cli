@@ -3,12 +3,14 @@ using System.Text.RegularExpressions;
 
 namespace az_kv.lib.Readers;
 
+public sealed record AppServiceConfiguration(string Name, string Value);
+
 public interface ILocalSettingReader
 {
     Task ReadAsync(string path, string outputFile);
 }
 
-public class LocalSettingReader : ILocalSettingReader
+public class LocalSettingReader// : ILocalSettingReader
 {
     private readonly IVaultSecretReader vaultSecretReader;
 
@@ -17,21 +19,8 @@ public class LocalSettingReader : ILocalSettingReader
         this.vaultSecretReader = vaultSecretReader;
     }
 
-    public async Task ReadAsync(string path, string outputFile)
+    public async Task<string[]> ReadAsync(string[] lines)
     {
-        if (File.Exists(path) == false)
-        {
-            Console.WriteLine($"File {path} does not exist.");
-            return;
-        }
-
-        var lines = await File.ReadAllLinesAsync(path);
-        if (lines.Length == 0)
-        {
-            return;
-        }
-
-        Console.WriteLine("Starting processing lines...");
         var found = 0;
 
         var result = new List<string>();
@@ -64,22 +53,37 @@ public class LocalSettingReader : ILocalSettingReader
 
         Console.WriteLine($"> Done process file. Found {found} secret keys");
 
-        var dir = Path.GetDirectoryName(path);
-        if (string.IsNullOrWhiteSpace(outputFile))
+        //var dir = Path.GetDirectoryName(path);
+        //if (string.IsNullOrWhiteSpace(outputFile))
+        //{
+        //    outputFile = "local.settings.log";
+        //}
+
+        //outputFile = Path.Combine(dir, outputFile);
+
+        //await File.WriteAllLinesAsync(outputFile, result);
+
+        //Console.WriteLine($"Output saved to {outputFile}");
+
+        return null;
+    }
+
+}
+public class KeyMatcher
+{
+    public static bool IsKeyVault(string text, out string secret, out string s2)
+    {
+        var valid= Regex.IsMatch(text, "@Microsoft.KeyVault.*https:\\/\\/.*\\.vault\\.azure\\.net.*");
+        if (!valid)
         {
-            outputFile = "local.settings.log";
+            return false;
+        }
+        var match = Regex.Match(line, "\"(.*)?\":\\s{0,}\"@Microsoft.KeyVault\\(SecretUri=(.*)\\/\\)\"");
+        if (!match.Success)
+        {
+            throw new ArgumentException($"Something wrong with this line: {line}. Recheck the regex pattern.");
         }
 
-        outputFile = Path.Combine(dir, outputFile);
-
-        await File.WriteAllLinesAsync(outputFile, result);
-
-        Console.WriteLine($"Output saved to {outputFile}");
-    }
-
-    private static bool IsKeyvault(string line)
-    {
-        return Regex.IsMatch(line, "@Microsoft.KeyVault.*https:\\/\\/.*\\.vault\\.azure\\.net.*");
+        return (match.Groups[1].Value, match.Groups[2].Value);
     }
 }
-
