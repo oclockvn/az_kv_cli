@@ -1,5 +1,5 @@
-﻿using az_kv.cli;
-using az_kv.lib;
+﻿using az_kv.lib;
+using cli;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 

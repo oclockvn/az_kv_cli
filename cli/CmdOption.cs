@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace az_kv.cli;
+namespace cli;
 
 internal class CmdOption
 {
