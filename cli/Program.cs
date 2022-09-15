@@ -22,7 +22,7 @@ await Parser.Default.ParseArguments<CmdOption>(() => new CmdOption { Type = "fn"
         var validFile = PathValidator.IsValidFile(opt.Input, out var path);
         if (!validFile)
         {
-            Console.WriteLine($"Input param is invalid file path.");
+            Console.WriteLine($"Input param {opt.Input} is an invalid file path.");
             return;
         }
 

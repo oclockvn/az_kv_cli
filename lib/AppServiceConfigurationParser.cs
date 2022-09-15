@@ -9,7 +9,17 @@ public class AppServiceConfigurationParser
     public static async Task<string[]> ParseAppSettingAsync(string filePath)
     {
         var json = await File.ReadAllTextAsync(filePath);
-        var arr = JsonConvert.DeserializeObject<List<NameValue>>(json);
+        List<NameValue> arr = null;
+
+        try
+        {
+            arr = JsonConvert.DeserializeObject<List<NameValue>>(json);
+        }
+        catch
+        {
+            // file may good already
+            return json.Split(Environment.NewLine);
+        }
 
         if (arr == null || arr.Count == 0)
             return null;
