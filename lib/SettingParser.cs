@@ -15,7 +15,7 @@ public class SettingParser
     {
         var found = 0;
         var result = new List<string>();
-        Log($"Processing {lines.Length} values...");
+        Log($"Processing {lines.Length} values...\r\n");
 
         try
         {

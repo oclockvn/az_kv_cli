@@ -5,12 +5,23 @@ namespace az_kv.lib;
 
 public class KeyVaultClient
 {
+    static readonly Dictionary<string, SecretClient> cache = new Dictionary<string, SecretClient>();
+
     public async Task<string> GetSecretAsync(string vault, string secretName)
     {
         var kvUri = "https://" + vault + ".vault.azure.net";
 
-        // todo: cache client
-        var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+        SecretClient client;
+        if (!cache.ContainsKey(kvUri))
+        {
+            client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+            cache.Add(kvUri, client);
+        }
+        else
+        {
+            client = cache[kvUri];
+        }
+
         var secret = await client.GetSecretAsync(secretName);
 
         return secret?.Value?.Value;
