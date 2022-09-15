@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "az_kv.cli": {
+      "commandName": "Project",
+      "commandLineArgs": "-i \"C:\\Users\\quangphan\\projects\\TallyIt\\TallyMain\\src\\TaskRunner\\local.settings.json\" -o dev.setting.log"
+    }
+  }
+}

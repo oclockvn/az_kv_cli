@@ -1,7 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-using az_kv.cli;
+﻿using az_kv.cli;
 using az_kv.lib;
-using az_kv.lib.Readers;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,30 +26,24 @@ await Parser.Default.ParseArguments<CmdOption>(() => new CmdOption { Type = "fn"
             return;
         }
 
+        var parser = sp.GetRequiredService<SettingParser>();
         var lines = await File.ReadAllLinesAsync(path);
 
-        if (opt.Type == "fn") // azure function
+        if (opt.Type == "app") // azure app service
         {
-            Console.WriteLine($"1. type = {opt.Type}, input = {opt.Input}, output = {opt.Output}");
+            // convert lines into valid json
         }
-        else // azure app service
+
+        var result = await parser.ParseAsync(lines);
+        var (success, msg) = await SettingWriter.WriteAsync(path, opt.Output, result);
+
+        if (success)
         {
-            Console.WriteLine($"2. type = {opt.Type}, input = {opt.Input}, output = {opt.Output}");
+            Console.WriteLine("\r\n*****************\r\nParse successfully > " + msg + "\r\n*****************");
+        }
+        else
+        {
+            Console.WriteLine(msg);
         }
     });
-
-//Console.Write("Enter path to local.settings.json: ");
-//var settingFile = Console.ReadLine()?.Trim('"'); // trim "" in case you copy path from Windows
-
-//if (settingFile?.StartsWith('/') == true) // I'm on Windows
-//{
-//    settingFile = settingFile.TrimStart('/').Replace('/', '\\');
-//    settingFile = settingFile[0].ToString().ToUpper() + ":" + (settingFile.Length > 1 ? settingFile.Substring(1) : string.Empty);
-//}
-
-//Console.Write("Enter output file without path (default is local.settings.log): ");
-//var output = Console.ReadLine();
-
-//var reader = sp.GetRequiredService<ILocalSettingReader>();
-//await reader.ReadAsync(settingFile, output);
 
