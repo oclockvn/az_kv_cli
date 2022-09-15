@@ -15,6 +15,7 @@ public class SettingParser
     {
         var found = 0;
         var result = new List<string>();
+        Log($"Processing {lines.Length} values...");
 
         try
         {
@@ -34,6 +35,7 @@ public class SettingParser
 
                 found++;
                 var vault = ParserHelper.ParseUri(value);
+                Log($"Parsing {vault.key}...");
                 var secret = await kvClient.GetSecretAsync(vault.vault, vault.key);
 
                 var space = SpaceCount(line);
@@ -41,17 +43,22 @@ public class SettingParser
                 var ending = line.Trim().EndsWith(',') ? "," : string.Empty;
                 var final = pad + "\"" + key + "\": \"" + secret + "\"" + ending;
 
-                Console.WriteLine(found + " found -> " + final.Trim());
+                Log(" ".PadLeft(4) + " > " + final.Trim());
 
                 result.Add(final);
             }
         }
         catch (CredentialUnavailableException)
         {
-            Console.WriteLine("Unable to login. Try \"az login\" and try again");
+            Log("Unable to login. Try \"az login\" and try again");
         }
 
         return result.ToArray();
+    }
+
+    static void Log(string msg)
+    {
+        Console.WriteLine(msg);
     }
 
     static int SpaceCount(string s)
