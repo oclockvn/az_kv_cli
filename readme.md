@@ -6,6 +6,7 @@ Utility that replaces keyvault settings in appsettings.json|socal.settings.json 
 - login to azure using `az login`
 
 
+## Usage
 ```
 cd cli
 dotnet build
