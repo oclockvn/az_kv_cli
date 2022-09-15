@@ -41,7 +41,7 @@ public class SettingParser
                 var space = SpaceCount(line);
                 var pad = space > 0 ? " ".PadLeft(space) : "";
                 var ending = line.Trim().EndsWith(',') ? "," : string.Empty;
-                var final = pad + "\"" + key + "\": \"" + secret + "\"" + ending;
+                var final = pad + key.Wrap('"') + ": " + secret.Wrap('"')+ ending;
 
                 Log(" ".PadLeft(4) + " > " + final.Trim());
 

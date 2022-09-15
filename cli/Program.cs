@@ -27,11 +27,16 @@ await Parser.Default.ParseArguments<CmdOption>(() => new CmdOption { Type = "fn"
         }
 
         var parser = sp.GetRequiredService<SettingParser>();
-        var lines = await File.ReadAllLinesAsync(path);
+        string[] lines;
 
         if (opt.Type == "app") // azure app service
         {
             // convert lines into valid json
+            lines = await AppServiceConfigurationParser.ParseAppSettingAsync(path);
+        }
+        else
+        {
+            lines = await File.ReadAllLinesAsync(path);
         }
 
         var result = await parser.ParseAsync(lines);

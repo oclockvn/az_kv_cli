@@ -5,6 +5,14 @@ namespace az_kv.lib;
 
 public static class ParserHelper
 {
+    public static string Wrap(this string text, char wrapper)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+
+        return wrapper + text + wrapper;
+    }
+
     /// <summary>
     ///
     /// </summary>
