@@ -21,7 +21,7 @@ public static class ParserHelper
     /// <exception cref="ArgumentException"></exception>
     public static (string vault, string key) ParseUri(string uri)
     {
-        var match = Regex.Match(uri.Trim().Trim('/'), "https:\\/\\/(.*)\\.vault\\.azure\\.net\\/secrets\\/([a-zA-Z_-]*)");
+        var match = Regex.Match(uri.Trim().Trim('/'), "https:\\/\\/(.*)\\.vault\\.azure\\.net\\/secrets\\/([0-9a-zA-Z_-]*)");
         if (!match.Success)
         {
             throw new ArgumentException($"{uri} is not a keyvault uri");

@@ -22,9 +22,17 @@ public class KeyVaultClient
             client = cache[kvUri];
         }
 
-        var secret = await client.GetSecretAsync(secretName);
+        try
+        {
+            var secret = await client.GetSecretAsync(secretName);
 
-        return secret?.Value?.Value;
+            return secret?.Value?.Value;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Something went wrong with the key {secretName}: {ex.Message}");
+            return $"--{secretName}--";
+        }
     }
 }
 
